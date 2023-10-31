@@ -14,7 +14,28 @@ export default function App() {
         { id: crypto.randomUUID(), title: newItem, completed: false },
       ]
     })
+
+    SetNewItem("")
   }
+
+  function toggleTodo(id, completed) {
+    SetTodos( currentTodos => {
+      return currentTodos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, completed }
+        }
+
+        return todo
+      })
+    })
+  }
+
+  function deleteTodo(id) {
+    SetTodos(currentTodos => {
+      return currentTodos.filter(todo => todo.id !== id)
+    })
+  }
+  
   return  (
     <>
   <form onSubmit={handleSubmit}className="new-item-form">
@@ -28,14 +49,19 @@ export default function App() {
   </form>
   <h1 className='header'>Todo List</h1>
   <ul className="list">
+    {todos.length === 0 && "no Todos"}
     {todos.map(todo => {
-      return <li>
+      return (
+      <li key={todo.id}>
     <label>
-      <input type="checkbox" checked={todo.completed} />
+      <input type="checkbox" checked={todo.completed}
+       onChange={e => toggleTodo(todo.id, e.target.checked)} />
       {todo.title}
       </label>
-      <button className="btn btn-Danger">Delete</button>
+      <button onClick={() => deleteTodo(todo.id)} 
+      className="btn btn-Danger">Delete</button>
     </li>
+      )
     })}
   </ul>
   </>
